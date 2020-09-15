@@ -367,7 +367,7 @@ def get_page_info_save(url, guid, tdate):
         responsestring = decode2uft8(responsestring)
         # print(responsestring)
 
-        pattern = ''
+        # pattern = ''
         if '【档案格式】' in responsestring:
             has_other_format(responsestring, guid, tdate)
         else:
@@ -459,4 +459,4 @@ if __name__ == '__main__':
     print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     print('End')
 
-    shutdownpc(60)
+    # shutdownpc(60)

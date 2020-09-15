@@ -35,7 +35,8 @@ class MysqlHelper(object):
         self.conn.close()
 
 if __name__ == '__main__':
-    helper = MysqlHelper()
+    print('Start')
+    # helper = MysqlHelper()
     # insert_sql = 'INSERT INTO weibo_test (weibo_text) VALUES (%s); '
     # data = ('这是你发的一条微博',)
     # helper.execute_modify_sql(insert_sql,data)
@@ -44,11 +45,12 @@ if __name__ == '__main__':
     # print(querysql)
     # result =  helper.is_has_same_data(querysql)
 
-    querysql = 'SELECT COUNT(id) FROM title WHERE title = %s and url = %s '
-    data = ('爆乳女神吴梦梦调教系列 黑丝高跟鞋穿风衣 挑战户外车上高潮 酒店啪啪巨乳摇拽','https://k6.7086xx.xyz/pw/html_data/5/2009/4953193.html',)
-    result =  helper.is_has_same_data(querysql,data)
-
-    if result == 1:
-        print('has same data')
-    else:
-        print('has not same data')
+    # querysql = 'SELECT COUNT(id) FROM title WHERE title = %s and url = %s '
+    # data = ('爆乳女神吴梦梦调教系列 黑丝高跟鞋穿风衣 挑战户外车上高潮 酒店啪啪巨乳摇拽','https://k6.7086xx.xyz/pw/html_data/5/2009/4953193.html',)
+    # result =  helper.is_has_same_data(querysql,data)
+    #
+    # if result == 1:
+    #     print('has same data')
+    # else:
+    #     print('has not same data')
+    print('End')
