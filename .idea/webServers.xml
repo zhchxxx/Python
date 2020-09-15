@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="a383a647-b2eb-481f-a39e-3dcd7a6d1eb2" name="https://github.com/zhchxxx/Python.git" url="https://github.com/zhchxxx/Python.git">
+        <fileTransfer accessType="LOCAL" port="0" />
+      </webServer>
+    </option>
+  </component>
+</project>
