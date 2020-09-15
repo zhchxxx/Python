@@ -19,12 +19,10 @@ class MysqlHelper(object):
     def is_has_same_data(self,sql,data):
        try:
             self.cursor.execute(sql,data)
-            # self.conn.commit()
             results = self.cursor.fetchone()
-            # for t in results:
-            print(results)
+            # print(results)
             count = results[0]
-            print(count)
+            # print(count)
             if int(count) > 0:
                 return 1
             else:
@@ -46,11 +44,11 @@ if __name__ == '__main__':
     # print(querysql)
     # result =  helper.is_has_same_data(querysql)
 
-    # querysql = 'SELECT COUNT(id) FROM title WHERE title = %s'
-    # data = ('爆乳女神吴梦梦调教系列 黑丝高跟鞋穿风衣 挑战户外车上高潮 酒店啪啪巨乳摇拽',)
-    # result =  helper.is_has_same_data(querysql,data)
-    #
-    # if result == 1:
-    #     print('has same data')
-    # else:
-    #     print('has not same data')
+    querysql = 'SELECT COUNT(id) FROM title WHERE title = %s and url = %s '
+    data = ('爆乳女神吴梦梦调教系列 黑丝高跟鞋穿风衣 挑战户外车上高潮 酒店啪啪巨乳摇拽','https://k6.7086xx.xyz/pw/html_data/5/2009/4953193.html',)
+    result =  helper.is_has_same_data(querysql,data)
+
+    if result == 1:
+        print('has same data')
+    else:
+        print('has not same data')

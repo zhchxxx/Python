@@ -17,14 +17,17 @@ def get_a_uuid():
     return uuid.uuid4().hex
 
 
+# 内容解码成utf-8
 def gbk2utf8(s):
     return s.encode('utf-8').decode('unicode_escape')
 
 
+# 内容解码成utf-8
 def decode2uft8(s):
     return s.encode("raw_unicode_escape").decode("utf-8")
 
 
+# 判断是否有重复的title实体存在
 def hassametitle(title, url):
     querysql = 'SELECT COUNT(id) FROM title WHERE title = %s and url = %s'
     data = (title, url,)
@@ -40,6 +43,7 @@ def inserttitle(id, infodate, title, url):
         helper.execute_modify_sql(insert_sql, data)
 
 
+# 判断是否有重复的title_info实体存在
 def hassametitleinfo(title, url):
     querysql = 'SELECT COUNT(id) FROM title_info WHERE titlename = %s and tdurl = %s'
     data = (title, url,)
@@ -55,6 +59,7 @@ def inserttitleinfo(id, titledate, titleid, titlename, titlesize, titlelenth, td
         helper.execute_modify_sql(insert_sql, data)
 
 
+# 判断是否有重复的torrent实体存在
 def hassametorrent(tname, path):
     querysql = 'SELECT COUNT(id) FROM torrent WHERE tname = %s and path = %s'
     data = (tname, path,)
@@ -70,6 +75,7 @@ def inserttorrent(tiid, url, tname, path):
         helper.execute_modify_sql(insert_sql, data)
 
 
+# 判断是否有重复的图片存在
 def hassamephoto(url, path):
     querysql = 'SELECT COUNT(id) FROM photo WHERE url = %s and path = %s'
     data = (url, path,)
@@ -85,6 +91,7 @@ def insertphoto(infoid, titledate, url, path):
         helper.execute_modify_sql(insert_sql, data)
 
 
+# 下载图片
 def download_img(img_url, phtoname, guid, tdate):
     try:
         datestring = time.strftime("%Y%m%d", time.localtime())
@@ -116,6 +123,7 @@ def download_img(img_url, phtoname, guid, tdate):
         print('图片下载失败！' + 'download_img')
 
 
+# 下载种子，当前为获取磁力链接
 def download_torrent(turl, titlename, titleid):
     try:
         # 把下载地址发送给requests模块
@@ -164,7 +172,7 @@ def download_torrent(turl, titlename, titleid):
         print('解析磁力链接失败！' + 'download_torrent')
 
 
-# 获取当前网页包含链接及信息并入库
+# 获取当前网页包含链接及信息并入库，并请求其他方法进行解析
 def get_page_has_link_save(str):
     try:
         # <a href="html_data/5/2009/4956100.html" id="a_ajax_4956100">[09.12] [MP4]【极品风骚】银行办业务勾引到的，吃了两次饭就跟我开房了</a>
@@ -347,6 +355,7 @@ def has_default(responsestring, tguid, tdate):
         print('解析模块失败！' + 'has_default')
 
 
+# 获取当前页所包含的内容并请求其他方法解析
 def get_page_info_save(url, guid, tdate):
     print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     print('请求连接：' + url)
@@ -375,6 +384,7 @@ def get_page_info_save(url, guid, tdate):
         print('链接请求失败：' + url)
 
 
+# 获取所有页包含内容
 def get_all_url(start, end):
     urltemp = 'https://k6.7086xx.xyz/pw/thread.php?fid=5&type=4&page='
     for num in range(start, end):
@@ -402,10 +412,11 @@ def get_all_url(start, end):
             print('请求页面失败！')
 
 
+# 首页请求header
 headers = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36'
 }
-
+# 下载请求header
 downloadheaders = {
     'authority': 'www1.hgcdown.net',
     'method': 'GET',
@@ -423,8 +434,9 @@ downloadheaders = {
 }
 
 
+# 电脑关机操作
 def shutdownpc(stime):
-    print(stime + '秒后电脑即将关机！')
+    print(stime + ' 秒后电脑即将关机！')
     os.system('shutdown /s /f /t ' + stime)
 
 
