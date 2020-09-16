@@ -356,7 +356,7 @@ def has_default(responsestring, tguid, tdate):
         titlename = ''
         titlesize = ''
         titlelenth = ''
-
+        # 当前内容没有内容属性时为true
         if len(res_match.group(3)) > 300:
             pattern_title = '<title>(.*?)</title>'
             res_titlename = re.search(pattern_title, responsestring)
@@ -382,6 +382,7 @@ def has_default(responsestring, tguid, tdate):
                     # print(purl)
                     img_name = os.path.basename(purl)
                     download_img(purl, img_name, guid, tdate)
+        # 内容包含内容属性时执行此部分
         else:
             pattern_url = '<div class="f14" id="read_tpc">(.*?)</div>'
             res_match_url = re.search(pattern_url, responsestring)

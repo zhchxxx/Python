@@ -1,24 +1,28 @@
 import pymysql
 
+
 class MysqlHelper(object):
+    # 数据库连接初始化
     def __init__(self):
         self.conn = pymysql.connect(
-            host = '127.0.0.1',
-            port = 3306,
-            user = 'root',
-            passwd = 'root',
-            db = 'sexdb',
-            charset = 'utf8mb4'
+            host='127.0.0.1',
+            port=3306,
+            user='root',
+            passwd='root',
+            db='sexdb',
+            charset='utf8mb4'
         )
         self.cursor = self.conn.cursor()
 
-    def execute_modify_sql(self,sql,data):
-        self.cursor.execute(sql,data)
+    # 更新或插入数据
+    def execute_modify_sql(self, sql, data):
+        self.cursor.execute(sql, data)
         self.conn.commit()
 
-    def is_has_same_data(self,sql,data):
-       try:
-            self.cursor.execute(sql,data)
+    # 判断是否存在同属性内容，实际为查询语句个数判断
+    def is_has_same_data(self, sql, data):
+        try:
+            self.cursor.execute(sql, data)
             results = self.cursor.fetchone()
             # print(results)
             count = results[0]
@@ -27,12 +31,14 @@ class MysqlHelper(object):
                 return 1
             else:
                 return 0
-       except:
-           return 0
+        except:
+            return 0
 
+    # 释放当前类
     def __del__(self):
         self.cursor.close()
         self.conn.close()
+
 
 if __name__ == '__main__':
     print('Start')
