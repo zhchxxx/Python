@@ -101,33 +101,44 @@ def download_img(img_url, phtoname, guid, tdate):
         filename = savepath + phtoname
         if not os.path.exists(filename):
             try:
-                r = requests.get(img_url, stream=True)
+                r = requests.get(img_url, stream=True, timeout=timeoutdownloadset)
                 if r.status_code == 200:
                     try:
                         open(filename, 'wb').write(r.content)  # 将内容写入图片
-                    except:
+                    except Exception as e:
                         print('图片写入失败：' + img_url)
+                        # 访问异常的错误编号和详细信息
+                        print(e.args)
+                        print(str(e))
+                        print(repr(e))
                 else:
                     print('图片下载失败：' + img_url)
-                del r
-            except:
+                # del r
+            except Exception as e:
                 print('请求超时：' + img_url)
-            # print(r.status_code) # 返回状态码
+                print(e.args)
+                print(str(e))
+                print(repr(e))
+                # print(r.status_code) # 返回状态码
             # print("done")
             # insert_sql = 'INSERT INTO photo (infoid,titledate,url,path) VALUES (%s,%s,%s,%s); '
             # data = (guid, tdate, img_url, filename,)
             # helper.execute_modify_sql(insert_sql, data)
             insertphoto(guid, tdate, img_url, filename)
 
-    except:
+    except Exception as e:
         print('图片下载失败！' + 'download_img')
+        print(e.args)
+        print(str(e))
+        print(repr(e))
+
+    # 下载种子，当前为获取磁力链接
 
 
-# 下载种子，当前为获取磁力链接
 def download_torrent(turl, titlename, titleid):
     try:
         # 把下载地址发送给requests模块
-        r = requests.get(turl)
+        r = requests.get(turl, timeout=timeoutset)
         # defaultpath = 'H:\\PythonDownload\\Torrent\\'
         # datestring = time.strftime("%Y%m%d", time.localtime())
         # savepath = defaultpath + datestring + '\\'
@@ -167,12 +178,16 @@ def download_torrent(turl, titlename, titleid):
 
         else:
             print('获取磁力链接失败')
-        del r
-    except:
+        # del r
+    except Exception as e:
         print('解析磁力链接失败！' + 'download_torrent')
+        print(e.args)
+        print(str(e))
+        print(repr(e))
+
+    # 获取当前网页包含链接及信息并入库，并请求其他方法进行解析
 
 
-# 获取当前网页包含链接及信息并入库，并请求其他方法进行解析
 def get_page_has_link_save(str):
     try:
         # <a href="html_data/5/2009/4956100.html" id="a_ajax_4956100">[09.12] [MP4]【极品风骚】银行办业务勾引到的，吃了两次饭就跟我开房了</a>
@@ -196,8 +211,11 @@ def get_page_has_link_save(str):
         inserttitle(guid, tdate, res_match_href.group(4), urlopen)
 
         get_page_info_save(urlopen, guid, tdate)
-    except:
+    except Exception as e:
         print('获取网页内链接失败！' + 'get_page_has_link_save')
+        print(e.args)
+        print(str(e))
+        print(repr(e))
 
 
 def has_format(responsestring, tguid, tdate):
@@ -221,7 +239,7 @@ def has_format(responsestring, tguid, tdate):
         guid = get_a_uuid()
         turl = 'http' + res_match_turl.group(1)
         file_name = os.path.basename(turl)
-        download_torrent(turl, file_name, guid)
+        download_torrent(turl, res_match.group(1), guid)
 
         # insert_sql = 'INSERT INTO title_info (id,titledate,titleid,titlename,titlesize,titlelenth,tdurl) VALUES (%s,%s,%s,%s,%s,%s,%s); '
         # data = (guid, tdate, tguid, res_match.group(1), res_match.group(5), res_match.group(2), turl,)
@@ -235,8 +253,11 @@ def has_format(responsestring, tguid, tdate):
                 # print(purl)
                 img_name = os.path.basename(purl)
                 download_img(purl, img_name, guid, tdate)
-    except:
+    except Exception as e:
         print('解析模块失败！' + 'has_format')
+        print(e.args)
+        print(str(e))
+        print(repr(e))
 
 
 def has_other_format(responsestring, tguid, tdate):
@@ -275,8 +296,11 @@ def has_other_format(responsestring, tguid, tdate):
                 # print(purl)
                 img_name = os.path.basename(purl)
                 download_img(purl, img_name, guid, tdate)
-    except:
+    except Exception as e:
         print('解析模块失败！' + 'has_other_format')
+        print(e.args)
+        print(str(e))
+        print(repr(e))
 
 
 def has_not_format(responsestring, tguid, tdate):
@@ -314,8 +338,11 @@ def has_not_format(responsestring, tguid, tdate):
                 # print(purl)
                 img_name = os.path.basename(purl)
                 download_img(purl, img_name, guid, tdate)
-    except:
+    except Exception as e:
         print('解析模块失败！' + 'has_not_format')
+        print(e.args)
+        print(str(e))
+        print(repr(e))
 
 
 def has_default(responsestring, tguid, tdate):
@@ -326,41 +353,78 @@ def has_default(responsestring, tguid, tdate):
         print('影片大小：' + res_match.group(2))
         print('种子编号：' + res_match.group(3))
 
-        pattern_url = '<div class="f14" id="read_tpc">(.*?)</div>'
-        res_match_url = re.search(pattern_url, responsestring)
-        # print(res_match_url.group(1))
-        pattern_turl = '"_blank" >http(.*?)</a>'
-        res_match_turl = re.search(pattern_turl, res_match_url.group(1))
-        # print(res_match_turl.group(1))
+        titlename = ''
+        titlesize = ''
+        titlelenth = ''
 
-        guid = get_a_uuid()
+        if len(res_match.group(3)) > 300:
+            pattern_title = '<title>(.*?)</title>'
+            res_titlename = re.search(pattern_title, responsestring)
+            print(res_titlename)
+            titlename = res_titlename.group(1)
 
-        turl = 'http' + res_match_turl.group(1)
-        file_name = os.path.basename(turl)
-        download_torrent(turl, file_name, guid)
+            pattern_turl = 'target="_blank" >http(.*?)</a>'
+            res_match_turl = re.search(pattern_turl, responsestring)
+            # print(res_match_turl.group(1))
 
-        # insert_sql = 'INSERT INTO title_info (id,titledate,titleid,titlename,titlesize,tid,tdurl) VALUES (%s,%s,%s,%s,%s,%s,%s); '
-        # data = (guid, tdate, tguid, res_match.group(1), res_match.group(2), res_match.group(3), turl,)
-        # helper.execute_modify_sql(insert_sql, data)
-        inserttitleinfo(guid, tdate, tguid, res_match.group(1), res_match.group(2), res_match.group(3), turl)
+            guid = get_a_uuid()
 
-        pattern_photo = '<img src="(.*?)"'
-        res_match_photo = re.findall(pattern_photo, responsestring)
-        for purl in res_match_photo:
-            if 'http' in purl:
-                # print(purl)
-                img_name = os.path.basename(purl)
-                download_img(purl, img_name, guid, tdate)
-    except:
+            turl = 'http' + res_match_turl.group(1)
+            file_name = os.path.basename(turl)
+            download_torrent(turl, file_name, guid)
+
+            inserttitleinfo(guid, tdate, tguid, titlename, titlesize, titlelenth, turl)
+
+            pattern_photo = 'window.open\(\'(.*?)\'\)'
+            res_match_photo = re.findall(pattern_photo, responsestring)
+            for purl in res_match_photo:
+                if 'http' in purl:
+                    # print(purl)
+                    img_name = os.path.basename(purl)
+                    download_img(purl, img_name, guid, tdate)
+        else:
+            pattern_url = '<div class="f14" id="read_tpc">(.*?)</div>'
+            res_match_url = re.search(pattern_url, responsestring)
+            # print(res_match_url.group(1))
+            pattern_turl = '"_blank" >http(.*?)</a>'
+            res_match_turl = re.search(pattern_turl, res_match_url.group(1))
+            # print(res_match_turl.group(1))
+
+            guid = get_a_uuid()
+
+            turl = 'http' + res_match_turl.group(1)
+            file_name = os.path.basename(turl)
+            download_torrent(turl, file_name, guid)
+
+            # insert_sql = 'INSERT INTO title_info (id,titledate,titleid,titlename,titlesize,tid,tdurl) VALUES (%s,%s,%s,%s,%s,%s,%s); '
+            # data = (guid, tdate, tguid, res_match.group(1), res_match.group(2), res_match.group(3), turl,)
+            # helper.execute_modify_sql(insert_sql, data)
+            titlename = res_match.group(1)
+            titlesize = res_match.group(2)
+            titlelenth = res_match.group(3)
+            inserttitleinfo(guid, tdate, tguid, titlename, titlesize, titlelenth, turl)
+
+            pattern_photo = '<img src="(.*?)"'
+            res_match_photo = re.findall(pattern_photo, responsestring)
+            for purl in res_match_photo:
+                if 'http' in purl:
+                    # print(purl)
+                    img_name = os.path.basename(purl)
+                    download_img(purl, img_name, guid, tdate)
+    except Exception as e:
         print('解析模块失败！' + 'has_default')
+        print(e.args)
+        print(str(e))
+        print(repr(e))
+
+    # 获取当前页所包含的内容并请求其他方法解析
 
 
-# 获取当前页所包含的内容并请求其他方法解析
 def get_page_info_save(url, guid, tdate):
     print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     print('请求连接：' + url)
     # try:
-    response = requests.get(url)
+    response = requests.get(url, timeout=timeoutset)
     if response.status_code == 200:
         responsestring = response.text
         # print(responsestring)
@@ -390,7 +454,7 @@ def get_all_url(start, end):
     for num in range(start, end):
         urlquery = urltemp + str(num)
         print('请求页面：' + urlquery)
-        response = requests.get(urlquery)
+        response = requests.get(urlquery, timeout=timeoutset)
         if response.status_code == 200:
             responsestring = response.text
             responsestring = decode2uft8(responsestring)
@@ -440,6 +504,10 @@ def shutdownpc(stime):
     os.system('shutdown /s /f /t ' + stime)
 
 
+# 网页请求超时设置
+timeoutset = 15
+timeoutdownloadset = 15
+
 # 默认下载路径
 defaultpath = 'H:\\PythonDownload\\Image\\'
 
@@ -454,8 +522,9 @@ if __name__ == '__main__':
     # get_page_info_save('https://k6.7086xx.xyz/pw/html_data/5/2009/4951587.html')
     # get_page_info_save('https://k6.7086xx.xyz/pw/html_data/5/2009/4956093.html')
     # get_page_info_save('https://k6.7086xx.xyz/pw/html_data/5/2009/4954644.html')
-    # guid = get_a_uuid()
+    guid = get_a_uuid()
     # get_page_info_save('https://k6.7086xx.xyz/pw/html_data/5/2009/4953161.html', guid)
+    # get_page_info_save('https://k6.7086xx.xyz/pw/html_data/5/2009/4959794.html',guid,'[9.15]')
     print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     print('End')
 
