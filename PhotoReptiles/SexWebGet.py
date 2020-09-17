@@ -523,10 +523,10 @@ if __name__ == '__main__':
     # get_page_info_save('https://k6.7086xx.xyz/pw/html_data/5/2009/4951587.html')
     # get_page_info_save('https://k6.7086xx.xyz/pw/html_data/5/2009/4956093.html')
     # get_page_info_save('https://k6.7086xx.xyz/pw/html_data/5/2009/4954644.html')
-    guid = get_a_uuid()
+    # guid = get_a_uuid()
     # get_page_info_save('https://k6.7086xx.xyz/pw/html_data/5/2009/4953161.html', guid)
     # get_page_info_save('https://k6.7086xx.xyz/pw/html_data/5/2009/4959794.html',guid,'[9.15]')
     print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
     print('End')
 
-    # shutdownpc(60)
+    shutdownpc(60)
